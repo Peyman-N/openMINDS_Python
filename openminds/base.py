@@ -35,6 +35,13 @@ class Node(metaclass=Registry):
                 return True
         return False
 
+    def __eq__(self, other: Node) -> bool:
+
+        eq = False
+        for property in self.properties:
+            property_other = getattr(other, property.name, False)
+            if property_other and property_other == property
+
     def to_jsonld(self, include_empty_properties=True, embed_linked_nodes=True, with_context=True):
         """
         Return a represention of this metadata node as a dictionary that can be directly serialized to JSON-LD.
@@ -50,7 +57,8 @@ class Node(metaclass=Registry):
                     )
                 else:
                     if hasattr(value, "id") and value.id is None:
-                        raise ValueError("Exporting as a stand-alone JSON-LD document requires @id to be defined.")
+                        raise ValueError(
+                            "Exporting as a stand-alone JSON-LD document requires @id to be defined.")
                     item = {"@id": value.id}
             elif isinstance(value, EmbeddedMetadata):
                 item = value.to_jsonld(
@@ -80,7 +88,8 @@ class Node(metaclass=Registry):
                     else:
                         if not isinstance(value, (tuple, list)):
                             value = [value]
-                        data[property.path] = [value_to_jsonld(item) for item in value]
+                        data[property.path] = [
+                            value_to_jsonld(item) for item in value]
                 else:
                     data[property.path] = value_to_jsonld(value)
         return {key: data[key] for key in sorted(data)}
@@ -94,7 +103,8 @@ class Node(metaclass=Registry):
         context = data_copy.pop("@context", None)
         type_ = data_copy.pop("@type")
         if type_ and type_ != cls.type_:
-            raise TypeError(f"Mismatched types. Data has '{type_}' but trying to create '{cls.type_}'")
+            raise TypeError(
+                f"Mismatched types. Data has '{type_}' but trying to create '{cls.type_}'")
         deserialized_data = {}
         if issubclass(cls, LinkedMetadata):
             deserialized_data["id"] = data_copy.pop("@id", None)
@@ -102,11 +112,13 @@ class Node(metaclass=Registry):
             if property.path in data_copy:  # todo: use context to resolve uris
                 value = data_copy.pop(property.path)
                 if value:
-                    deserialized_data[property.name] = property.deserialize(value)
+                    deserialized_data[property.name] = property.deserialize(
+                        value)
                 else:
                     deserialized_data[property.name] = value
         if len(data_copy) > 0:
-            raise NameError(f"Unexpected arguments for {cls}: {tuple(data_copy.keys())}")
+            raise NameError(
+                f"Unexpected arguments for {cls}: {tuple(data_copy.keys())}")
         return cls(**deserialized_data)
 
     def validate(self, ignore=None):

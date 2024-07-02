@@ -35,6 +35,14 @@ class Collection:
     def __iter__(self):
         return iter(self.nodes.values())
 
+    def __eq__(self, other):
+
+        # for node in tuple(self.nodes.values()):
+        #     for linked_node in node.links:
+        #         self._add_node(linked_node)
+
+        for node in self.nodes.values():
+
     def add(self, *nodes):
         """
         Add one or more metadata nodes to the collection.
@@ -91,7 +99,8 @@ class Collection:
         if not individual_files:
             if os.path.exists(path):
                 if not os.path.isfile(path):
-                    raise OSError(f"Cannot create file {path} because a directory with that name already exists.")
+                    raise OSError(
+                        f"Cannot create file {path} because a directory with that name already exists.")
             else:
                 parent_dir = os.path.dirname(path)
                 if parent_dir:
@@ -112,7 +121,8 @@ class Collection:
             if not os.path.exists(path):
                 os.makedirs(path, exist_ok=True)
             if not os.path.isdir(path):
-                raise OSError("if saving to multiple files, `path` must be a directory")
+                raise OSError(
+                    "if saving to multiple files, `path` must be a directory")
             output_paths = []
             for node in self:
                 if node.id.startswith("http"):
@@ -122,7 +132,8 @@ class Collection:
                     file_identifier = node.id[2:]
                 file_path = os.path.join(path, f"{file_identifier}.jsonld")
                 with open(file_path, "w") as fp:
-                    data = node.to_jsonld(embed_linked_nodes=False, include_empty_properties=include_empty_properties)
+                    data = node.to_jsonld(
+                        embed_linked_nodes=False, include_empty_properties=include_empty_properties)
                     json.dump(data, fp, indent=2)
                     output_paths.append(file_path)
         return output_paths
@@ -161,7 +172,8 @@ class Collection:
                     else:
                         # allow links to metadata instances outside this collection
                         if not item["@id"].startswith("http"):
-                            raise ValueError("Local nodes must have @type specified")
+                            raise ValueError(
+                                "Local nodes must have @type specified")
                         node = Link(item["@id"])
                     self.add(node)
             else:
@@ -171,7 +183,8 @@ class Collection:
                 else:
                     # allow links to metadata instances outside this collection
                     if not data["@id"].startswith("http"):
-                        raise ValueError("Local nodes must have @type specified")
+                        raise ValueError(
+                            "Local nodes must have @type specified")
                     node = Link(data["@id"])
                 self.add(node)
         self._resolve_links()
