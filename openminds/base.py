@@ -37,10 +37,15 @@ class Node(metaclass=Registry):
 
     def __eq__(self, other: Node) -> bool:
 
-        eq = False
+        eq = True
         for property in self.properties:
             property_other = getattr(other, property.name, False)
-            if property_other and property_other == property
+            if property_other and property_other == property:
+                pass
+            else:
+                eq = False
+
+        return eq
 
     def to_jsonld(self, include_empty_properties=True, embed_linked_nodes=True, with_context=True):
         """

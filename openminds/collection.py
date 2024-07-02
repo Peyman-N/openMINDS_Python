@@ -41,7 +41,12 @@ class Collection:
         #     for linked_node in node.links:
         #         self._add_node(linked_node)
 
-        for node in self.nodes.values():
+        eq = True
+        for key in self.nodes.keys():
+            if self.nodes[key] != other.nodes[key]:
+                eq = False
+
+        return eq
 
     def add(self, *nodes):
         """
