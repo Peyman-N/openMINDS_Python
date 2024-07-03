@@ -37,13 +37,13 @@ class Collection:
 
     def __eq__(self, other):
 
-        # for node in tuple(self.nodes.values()):
-        #     for linked_node in node.links:
-        #         self._add_node(linked_node)
-
         eq = True
+        # The current implementation assumes that nodes in both graphs are connected with the same link number.
         for key in self.nodes.keys():
-            if self.nodes[key] != other.nodes[key]:
+            if key in other.nodes.keys():
+                if self.nodes[key] != other.nodes[key]:
+                    eq = False
+            else:
                 eq = False
 
         return eq

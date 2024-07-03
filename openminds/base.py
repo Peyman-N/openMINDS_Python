@@ -39,8 +39,9 @@ class Node(metaclass=Registry):
 
         eq = True
         for property in self.properties:
-            property_other = getattr(other, property.name, False)
-            if property_other and property_other == property:
+            property_other = getattr(other, property.name, None)
+            property_self = getattr(self, property.name, None)
+            if property_other == property_self:
                 pass
             else:
                 eq = False
